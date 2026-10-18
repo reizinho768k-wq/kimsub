@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KimSub - Dashboard do Utilizador</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body class="text-white font-sans min-h-screen flex flex-col justify-between p-4 select-none">
+
+  <header class="glass p-4 rounded-xl flex justify-between items-center px-6 max-w-4xl mx-auto w-full">
+    <div class="flex items-center gap-2">
+      <i data-lucide="layout-dashboard" class="text-indigo-400"></i>
+      <h1 class="text-lg font-bold text-indigo-400">KimSub Dashboard</h1>
+    </div>
+    <nav class="flex gap-4 text-sm">
+      <a href="index.html" class="hover:text-indigo-300 transition">Início</a>
+      <a href="admin.html" class="hover:text-red-400 transition">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container mx-auto p-4 flex-grow flex justify-center items-center">
+    <div class="w-full max-w-4xl glass p-6 rounded-2xl space-y-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Monetização e Mercado Pago -->
+        <div class="bg-slate-800/60 p-4 rounded-xl space-y-4 border border-slate-700">
+          <h3 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="credit-card" class="text-blue-400"></i> Monetização (Mercado Pago)</h3>
+          <p class="text-xs text-gray-400">Autoriza a tua conta para receber pagamentos automáticos na base de dados lojakim[cite: 1].</p>
+          <button onclick="autorizarMercadoPago()" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition text-sm">Autorizar com Mercado Pago</button>
+          
+          <hr class="border-slate-700">
+
+          <h4 class="font-semibold text-sm">Adicionar Produto Digital</h4>
+          <input type="text" id="prodName" placeholder="Nome do Produto" class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-sm">
+          <input type="number" id="prodPrice" placeholder="Preço (R$)" class="w-full p-2 bg-slate-900 border border-slate-700 rounded text-sm">
+          <button onclick="salvarProduto()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-sm">Registar Produto</button>
+        </div>
+
+        <!-- Produtos e Chat -->
+        <div class="bg-slate-800/60 p-4 rounded-xl space-y-4 border border-slate-700 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-semibold flex items-center gap-2"><i data-lucide="package" class="text-purple-400"></i> Os Meus Produtos</h3>
+            <div id="listaProdutos" class="h-28 bg-slate-900 p-2 rounded text-xs overflow-y-auto space-y-1 mt-2">
+              <p class="text-gray-500">A carregar produtos do Firebase...</p>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-700 pt-4">
+            <h4 class="font-semibold text-sm flex items-center gap-2 mb-2"><i data-lucide="message-circle" class="text-green-400"></i> Chat com Clientes</h4>
+            <div id="chatBox" class="h-16 bg-slate-900 p-2 rounded text-xs overflow-y-auto space-y-1 mb-2">
+              <p class="text-gray-400"><strong class="text-indigo-400">Sistema:</strong> Canal seguro ativo.</p>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" id="chatInput" placeholder="Escrever mensagem..." class="flex-grow p-1.5 bg-slate-900 border border-slate-700 rounded text-xs">
+              <button onclick="enviarMensagem()" class="px-3 bg-green-600 text-xs rounded font-bold hover:bg-green-500 transition">Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="text-center p-4 text-xs text-gray-500">
+    KimSub &copy; 2026 - Todos os direitos reservados[cite: 1]
+  </footer>
+
+  <script type="module">
+    import { db } from './assets/js/firebase.js';
+    import { ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    window.autorizarMercadoPago = function() {
+      alert('Redirecionando para o fluxo OAuth oficial do Mercado Pago...');
+      // Aqui integrarias a URL de autorização do Mercado Pago do utilizador
+    }
+
+    window.salvarProduto = function() {
+      const nome = document.getElementById('prodName').value;
+      const preco = document.getElementById('prodPrice').value;
+      if (!nome || !preco) return alert('Preencha todos os campos!');
+
+      const produtosRef = ref(db, 'produtos');
+      push(produtosRef, { nome, preco, timestamp: Date.now() }).then(() => {
+        alert('Produto guardado com sucesso!');
+        document.getElementById('prodName').value = '';
+        document.getElementById('prodPrice').value = '';
+      });
+    }
+
+    // Listar produtos em tempo real
+    onValue(ref(db, 'produtos'), (snapshot) => {
+      const data = snapshot.val();
+      const container = document.getElementById('listaProdutos');
+      container.innerHTML = '';
+      if (data) {
+        Object.values(data).forEach(p => {
+          container.innerHTML += `<div class="p-1.5 bg-slate-800 rounded flex justify-between"><span>${p.nome}</span><span class="text-green-400">R$ ${p.preco}</span></div>`;
+        });
+      } else {
+        container.innerHTML = '<p class="text-gray-500">Sem produtos registados.</p>';
+      }
+    });
+
+    window.enviarMensagem = function() {
+      const msg = document.getElementById('chatInput').value;
+      if (!msg) return;
+      const chatRef = ref(db, 'chat');
+      push(chatRef, { texto: msg, autor: 'Utilizador', time: Date.now() });
+      document.getElementById('chatInput').value = '';
+    }
+
+    onValue(ref(db, 'chat'), (snapshot) => {
+      const data = snapshot.val();
+      const box = document.getElementById('chatBox');
+      box.innerHTML = '';
+      if (data) {
+        Object.values(data).forEach(m => {
+          box.innerHTML += `<p class="text-gray-300"><strong>${m.autor}:</strong> ${m.texto}</p>`;
+        });
+      }
+    });
+
+    lucide.createIcons();
+  </script>
+  <script src="./assets/js/security.js"></script>
+</body>
+</html>

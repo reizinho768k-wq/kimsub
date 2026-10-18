@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KimSub - Verificação de Acesso</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body class="text-white font-sans min-h-screen flex flex-col justify-between items-center p-4">
+
+  <div class="w-full max-w-md glass p-6 rounded-2xl shadow-2xl text-center space-y-6 mt-10">
+    <h1 class="text-2xl font-bold text-indigo-400">KimSub</h1>
+    <p class="text-gray-400 text-sm">Conclui os componentes abaixo para liberar o teu destino.</p>
+
+    <div class="space-y-3 text-left">
+      <div id="step1" onclick="completeStep(1)" class="p-3 bg-slate-800/80 rounded-xl cursor-pointer hover:bg-slate-700 transition flex justify-between items-center border border-slate-700">
+        <span class="flex items-center gap-2 text-sm"><i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> Subscrever no Canal</span>
+        <i id="check1" data-lucide="circle" class="text-gray-500 w-5 h-5"></i>
+      </div>
+      <div id="step2" onclick="completeStep(2)" class="p-3 bg-slate-800/80 rounded-xl cursor-pointer hover:bg-slate-700 transition flex justify-between items-center border border-slate-700">
+        <span class="flex items-center gap-2 text-sm"><i data-lucide="thumbs-up" class="w-4 h-4 text-blue-500"></i> Deixar o Like</span>
+        <i id="check2" data-lucide="circle" class="text-gray-500 w-5 h-5"></i>
+      </div>
+    </div>
+
+    <button id="destBtn" disabled class="w-full py-3 bg-gray-600 text-gray-400 font-bold rounded-xl cursor-not-allowed transition duration-300">
+      Bloqueado
+    </button>
+  </div>
+
+  <script type="module">
+    import { playClickSound } from './assets/assets/js/audio.js'; // Ajustar caminho conforme necessário
+    // Lógica modularizada de verificação dos passos
+    let steps = [false, false];
+    window.completeStep = function(num) {
+      steps[num - 1] = true;
+      const icon = document.getElementById('check' + num);
+      icon.setAttribute('data-lucide', 'check-circle-2');
+      icon.classList.replace('text-gray-500', 'text-green-400');
+      lucide.createIcons();
+
+      if(steps.every(Boolean)) {
+        const btn = document.getElementById('destBtn');
+        btn.disabled = false;
+        btn.classList.replace('bg-gray-600', 'bg-green-600');
+        btn.classList.replace('text-gray-400', 'text-white');
+        btn.classList.remove('cursor-not-allowed');
+        btn.innerText = 'Aceder ao Destino';
+      }
+    }
+    lucide.createIcons();
+  </script>
+  <script src="./assets/js/security.js"></script>
+</body>
+</html>

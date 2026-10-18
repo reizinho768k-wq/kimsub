@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KimSub - Painel Administrativo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body class="text-white font-sans min-h-screen flex flex-col justify-between p-4 select-none">
+
+  <header class="glass p-4 rounded-xl flex justify-between items-center px-6 max-w-4xl mx-auto w-full">
+    <div class="flex items-center gap-2">
+      <i data-lucide="shield-alert" class="text-red-400"></i>
+      <h1 class="text-lg font-bold text-red-400">KimSub Admin</h1>
+    </div>
+    <nav class="flex gap-4 text-sm">
+      <a href="index.html" class="hover:text-indigo-300 transition">Início</a>
+      <a href="dashboard.html" class="hover:text-indigo-300 transition">Dashboard</a>
+    </nav>
+  </header>
+
+  <main class="container mx-auto p-4 flex-grow flex justify-center items-center">
+    <div class="w-full max-w-4xl glass p-6 rounded-2xl space-y-6">
+      <h2 class="text-2xl font-bold text-red-400">Painel de Controlo Global</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-800/80 p-4 rounded-xl text-center border border-slate-700">
+          <p class="text-gray-400 text-xs">Projeto Firebase</p>
+          <p class="text-lg font-bold text-indigo-400">lojakim[cite: 1]</p>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-xl text-center border border-slate-700">
+          <p class="text-gray-400 text-xs">Segurança Anti-Bot</p>
+          <p class="text-lg font-bold text-green-400">Ativada</p>
+        </div>
+        <div class="bg-slate-800/80 p-4 rounded-xl text-center border border-slate-700">
+          <p class="text-gray-400 text-xs">Estado da Base de Dados</p>
+          <p class="text-lg font-bold text-blue-400">Online</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700 space-y-2">
+        <h3 class="font-semibold text-sm">Informação do Sistema</h3>
+        <p class="text-xs text-gray-400">URL da Base de Dados Realtime: <code class="text-indigo-300">https://lojakim-default-rtdb.firebaseio.com</code>[cite: 1]</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-center p-4 text-xs text-gray-500">
+    KimSub Admin &copy; 2026[cite: 1]
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="./assets/js/security.js"></script>
+</body>
+</html>
